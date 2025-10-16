@@ -86,7 +86,7 @@ app.get("/divisao/:numUm/:numDois/", (req, res)=>{
         const numDois = req.params.numDois;  //consulta numDois
         //tratar os dados de numUm
         
-        if(numUm == undefined || numUm == "" || isNaN(numUm) || numDois == undefined || numDois == "" || isNaN(numDois)){
+        if(numUm == undefined || numUm == "" || isNaN(numUm) || numDois == undefined || numDois == "" || isNaN(numDois) || numDois == 0){
             return res.status(404).send(`Condição não valida`);
         }
         let resultadoSoma = parseFloat(numUm) / parseFloat(numDois);
