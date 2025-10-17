@@ -3,8 +3,9 @@ const app = express();
 const PORT = 8081; // Ou a porta de sua preferência
 
 // Rota principal para a calculadora
-app.get('/calculadora', (req, res) => {
+app.get('/calculadora/:tipo/', (req, res) => {
     // 1. Obter parâmetros da query string
+    const tipoOperacao = req.params.tipo.toLowerCase();
     const operacao = req.query.operacao;
     const numUm = parseFloat(req.query.numUm);
     const numDois = parseFloat(req.query.numDois);
@@ -51,10 +52,10 @@ app.get('/calculadora', (req, res) => {
 
 });
 
+   
 // Iniciar o servidor
 app.listen(PORT, () => {
-    console.log(`Calculadora API rodando em http://localhost:${PORT}`);
-    console.log(`Exemplo: http://localhost:${PORT}/calculadora?operacao=soma&numUm=4&numDois=6`);
+    console.log(`Calculadora rodando em http://localhost:${PORT}`);
+    console.log(`http://localhost:${PORT}/calculadora/tipo?operacao=soma&numUm=4&numDois=6`);
 });
 
-// Para rodar este código, você precisaria ter o Node.js e o pacote 'express' instalados.
