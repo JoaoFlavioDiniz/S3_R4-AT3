@@ -1,107 +1,60 @@
-const express = require("express");
-const app = express(); //constante de servidor
-const PORT = 8081;
+const express = require('express');
+const app = express();
+const PORT = 8081; // Ou a porta de sua preferência
 
-// hello/:nome rota para o req.param.nome
-app.get("/adicao/:numUm/:numDois/", (req, res)=>{
+// Rota principal para a calculadora
+app.get('/calculadora', (req, res) => {
+    // 1. Obter parâmetros da query string
+    const operacao = req.query.operacao;
+    const numUm = parseFloat(req.query.numUm);
+    const numDois = parseFloat(req.query.numDois);
+    let resultado;
 
-    try {
-        
-        const numUm = req.params.numUm;  //consulta numUm
-        const numDois = req.params.numDois;  //consulta numDois
-        //tratar os dados de numUm
-        
-        if(numUm == undefined || numUm == "" || isNaN(numUm) || numDois == undefined || numDois == "" || isNaN(numDois)){
-            return res.status(404).send(`Condição não valida`);
-        }
-        let resultadoSoma = parseFloat(numUm) + parseFloat(numDois);
-    
-        res.status(200).send(`O numero ${numUm}, adicionado ao numero ${numDois}, eh: ${resultadoSoma}`);//escreve 
-    } catch (error) {
-        //captura o erro
-        //console.error("Erro ao exibir a soma:"+error);
-        console.status(`Erro ao exibir a soma: ${error}`); //outra forma de fazder a linha acima com crase
-        res.status(500).send(`Erro interno no servidor`);
+    // 2. Validação básica dos parâmetros numéricos
+    if (isNaN(numUm) || isNaN(numDois)) {
+        return res.status(400).send({
+            erro: "Parâmetros 'numUm' e 'numDois' devem ser números válidos."
+        });
     }
-    
-});
 
-
-// multiplicacao/:nome rota para o req.param.nome
-app.get("/multiplicacao/:numUm/:numDois/", (req, res)=>{
-
-    try {
-        
-        const numUm = req.params.numUm;  //consulta numUm
-        const numDois = req.params.numDois;  //consulta numDois
-        //tratar os dados de numUm
-        
-        if(numUm == undefined || numUm == "" || isNaN(numUm) || numDois == undefined || numDois == "" || isNaN(numDois)){
-            return res.status(404).send(`Condição não valida`);
-        }
-        let resultadoSoma = parseFloat(numUm) * parseFloat(numDois);
-    
-        res.status(200).send(`O numero ${numUm}, multiplicado pelo numero ${numDois}, eh: ${resultadoSoma}`);//escreve 
-    } catch (error) {
-        //captura o erro
-        //console.error("Erro ao exibir a soma:"+error);
-        console.status(`Erro ao exibir a soma: ${error}`); //outra forma de fazder a linha acima com crase
-        res.status(500).send(`Erro interno no servidor`);
+    // 3. Processamento da operação
+    switch (operacao) {
+        case 'soma':
+            resultado = numUm + numDois;
+            break;
+        case 'subtracao':
+            resultado = numUm - numDois;
+            break;
+        case 'multiplicacao':
+            resultado = numUm * numDois;
+            break;
+        case 'divisao':
+            // Tratamento especial para divisão por zero
+            if (numDois === 0) {
+                return res.status(400).send({
+                    erro: "Impossível dividir por zero."
+                });
+            }
+            resultado = numUm / numDois;
+            break;
+        default:
+            // Retorno para operação inválida
+            return res.status(400).send({
+                erro: "Operação inválida. Use: soma, subtracao, multiplicacao ou divisao."
+            });
     }
-    
+
+    // 4. Retorno do resultado (conforme o exemplo solicitado)
+    res.send(`Resultado: ${resultado}`);
+    // Ou em formato JSON para uma API moderna:
+    // res.json({ resultado: resultado });
+
 });
 
-
-// subtracao/:nome rota para o req.param.nome
-app.get("/subtracao/:numUm/:numDois/", (req, res)=>{
-
-    try {
-        
-        const numUm = req.params.numUm;  //consulta numUm
-        const numDois = req.params.numDois;  //consulta numDois
-        //tratar os dados de numUm
-        
-        if(numUm == undefined || numUm == "" || isNaN(numUm) || numDois == undefined || numDois == "" || isNaN(numDois)){
-            return res.status(404).send(`Condição não valida`);
-        }
-        let resultadoSoma = parseFloat(numUm) - parseFloat(numDois);
-    
-        res.status(200).send(`O numero ${numUm}, subtraido do numero ${numDois}, eh: ${resultadoSoma}`);//escreve 
-    } catch (error) {
-        //captura o erro
-        //console.error("Erro ao exibir a soma:"+error);
-        console.status(`Erro ao exibir a soma: ${error}`); //outra forma de fazder a linha acima com crase
-        res.status(500).send(`Erro interno no servidor`);
-    }
-    
+// Iniciar o servidor
+app.listen(PORT, () => {
+    console.log(`Calculadora API rodando em http://localhost:${PORT}`);
+    console.log(`Exemplo: http://localhost:${PORT}/calculadora?operacao=soma&numUm=4&numDois=6`);
 });
 
-
-// divisao/:nome rota para o req.param.nome
-app.get("/divisao/:numUm/:numDois/", (req, res)=>{
-
-    try {
-        
-        const numUm = req.params.numUm;  //consulta numUm
-        const numDois = req.params.numDois;  //consulta numDois
-        //tratar os dados de numUm
-        
-        if(numUm == undefined || numUm == "" || isNaN(numUm) || numDois == undefined || numDois == "" || isNaN(numDois) || numDois == 0){
-            return res.status(404).send(`Condição não valida`);
-        }
-        let resultadoSoma = parseFloat(numUm) / parseFloat(numDois);
-    
-        res.status(200).send(`O numero ${numUm}, dividido pelo numero ${numDois}, eh: ${resultadoSoma}`);//escreve 
-    } catch (error) {
-        //captura o erro
-        //console.error("Erro ao exibir a soma:"+error);
-        console.status(`Erro ao exibir a soma: ${error}`); //outra forma de fazder a linha acima com crase
-        res.status(500).send(`Erro interno no servidor`);
-    }
-    
-});
-
-//sempre a ultima linha
-app.listen(PORT, ()=>{
-    console.log(`servidor rodando no http://localhost:${PORT}`);
-});
+// Para rodar este código, você precisaria ter o Node.js e o pacote 'express' instalados.
